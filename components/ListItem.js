@@ -1,50 +1,77 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
-import React, { useState } from 'react'
-import { Ionicons } from '@expo/vector-icons'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
+import React, { useState, useContext } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import PriceContext from "../hook/Price";
 
 const ListItem = ({ item, deleteItem }) => {
+  const { totalPrice, updateItems } = useContext(PriceContext); // เรียกใช้ Context API ที่คุณสร้าง
 
-  const [number, setnumber] = useState();
-  const onChange = priceValue => setnumber(parseInt(priceValue));
+  const onChange = (priceValue) => {
+    updateItems((prevItems) => [
+      ...prevItems,
+      {
+        price: parseInt(priceValue) || 0, // แปลงค่าราคาเป็นตัวเลขและใช้ค่าเริ่มต้นเป็น 0 หากไม่ได้ระบุ
+      },
+    ]);
+  };
+
+  console.log(totalPrice);
 
   return (
     <TouchableOpacity style={styles.listItem}>
       <View style={styles.listItemView}>
         <Text style={styles.listItemText}>{item.text}</Text>
-        <TextInput style={styles.listItemPrice} placeholder='- Add Price -' onChangeText={onChange}/>
-        <Ionicons style={styles.icons} name='close' size={20} color='firebrick' onPress={() => deleteItem(item.id)} />
+        <TextInput
+          style={styles.listItemPrice}
+          placeholder="- Add Price -"
+          onChangeText={onChange}
+          keyboardType="numeric"
+        />
+        <Ionicons
+          style={styles.icons}
+          name="close"
+          size={20}
+          color="firebrick"
+          onPress={() => deleteItem(item.id)}
+        />
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 //---------- STYLES ----------
 const styles = StyleSheet.create({
   listItem: {
     padding: 15,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderColor: '#eee'
+    borderColor: "#eee",
   },
   icons: {
-    marginLeft: 10
+    marginLeft: 10,
   },
   listItemView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   listItemText: {
     fontSize: 16,
-    flex: 1
+    flex: 1,
   },
   listItemPrice: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
     // backgroundColor: 'lightgray',
     padding: 5,
     margin: 5,
-  }
-})
+  },
+});
 
 export default ListItem;
